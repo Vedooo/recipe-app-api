@@ -1,0 +1,12 @@
+A) First we need to decide our requirements in the requirements.txt file 
+
+-- Also create Dockerfile, .dockerignore and docker-compose file for app
+
+-- And we create a other requirements.txt for testing tools and lints
+
+-- Add django project in repo
+
+   --> We will add first with docker-compose on dev environment
+      
+      -- docker-compose run --rm app sh -c "django-admin startproject app ."
+B)
