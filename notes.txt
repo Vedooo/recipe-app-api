@@ -249,7 +249,7 @@ C) Configuring Database
 
 D) We set the db credentials in settings.py 
 
-F) Fixing db race condition.
+E) Fixing db race condition.
 
 -- Problem:
 
@@ -302,3 +302,51 @@ F) Fixing db race condition.
       -> docker-compose run --rm app sh -c "python manage.py wait_for_db && flake8"
 
    -- Also we can fix flake8 messages with " # noqa" parameter
+
+F) Database Migration
+
+-- Django comes with ORM.
+
+-- Object Relational Mapper(ORM)
+
+-- Abstraction layer for data.
+
+   -- Django handles db structure and changes.
+
+   -- Focus on Python code
+
+   -- Use any db(within reason)
+
+-- Using ORM --
+
+[Define models] --> [Generate migration files] --> [Setup database] --> [Store data]
+
+-- Models
+
+   -- Each model maps to a table.
+
+   -- Models contain
+
+      -- Name.
+
+      -- Fields.
+
+      -- Other metadata.
+
+      -- Custom python logic.
+
+-- Creating migrations
+
+   -- Ensure app is enabled in settings.py
+
+   -- Use Django CLI
+
+      -> python manage.py makemigrations
+
+-- Applying migrations
+
+   -- Use Django CLI
+
+      -> python manage.py migrate
+
+   -- Run it after waiting for database
