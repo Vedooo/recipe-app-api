@@ -248,3 +248,57 @@ C) Configuring Database
             -- Clean up build dependencies.
 
 D) We set the db credentials in settings.py 
+
+F) Fixing db race condition.
+
+-- Problem:
+
+   -- Using depends_on ensures service starts.
+
+      -- It doesn't ensure application is running.
+
+      -- When service is start but it takes too much time and waiting for db because of "depends_on" parameter in compose file
+      and when db is intialized service is crushed because of the timeout. So we need to solve this traffic with 
+      "wait_for_db" command.
+
+         -- Make Django "wait for db"
+
+            -- Check for db availability.
+
+            -- Continue when db ready.
+
+         -- Create custom Django management command.
+
+-- We need create new django app in our env and then we can create command.
+
+   --> docker-compose run --rm app sh -c "python manage.py startapp core"
+
+   -- We can delete tests.py and views.py because core is just used for modalling to app.
+
+   -- And then we will create a new folder as tests/ and create an __init__.py
+
+   -- After that we need to call this folder and __init__.py under "INSTALLED_APPS" in settings.py
+
+-- Now can create our wait_for_db command.
+
+   -- We will create a folder as management in app/core/management/commands/
+
+   -- Also we need create __init__.py too.
+
+   -- And we will create commands in wait_for_db.py
+
+   -- After that we need to create our tests for wait_for_db function in /app/core/tests/
+
+   -- And we can test with:
+
+      -> docker-compose run --rm app sh -c "python manage.py test"
+
+   -- Now we can add configure our handle function on wait_for_db command.
+
+   -- And we can call our wait_for_db function like:
+
+      -> docker-compose run --rm app sh -c "python manage.py wait_for_db"
+
+      -> docker-compose run --rm app sh -c "python manage.py wait_for_db && flake8"
+
+   -- Also we can fix flake8 messages with " # noqa" parameter
