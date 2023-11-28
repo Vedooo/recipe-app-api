@@ -12,4 +12,237 @@ A) First we need to decide our requirements in the requirements.txt file
 
 -- Configure the github action for project.
 
-B)
+B) Write the test for django framework.
+
+-- Based on unittest.
+
+-- Django adds features
+ 
+   -- Test client - dummyy web browser
+
+   -- Simulate auth.
+
+   -- Temporary database.
+
+-- Django REST Framework adds features.
+
+   -- API Test client.
+
+-- Can create test.py added to each app or create tests/ subdirectory to split tests up.
+
+-- Test database.
+
+   -- Test code that uses the DB.
+
+   -- Spesific db for tests.
+
+   -- runs test --> clears data --> runs test ...
+
+-- Test classes.
+
+   -- No db integration.
+
+   -- Useful if no db is required for your test.
+
+   -- Save time executing tests.
+
+-- Writing tests.
+
+   -- Import test class.
+
+      -- SimpleTestCase -> No Db
+
+      -- TestCase -> Db
+
+   -- Import objects to test.
+
+   -- Define test class.
+
+   -- Add test method.
+
+   -- Setup Inputs.
+
+   -- Execute code to be tested.
+
+   -- Check output.
+
+-- Accourding to TDD
+
+   -- First we need to create test after that add functionality
+
+   -- Mocking
+
+      -- Override or change behaviour of dependencies.
+
+      -- Avoid unintended side effects.
+
+      -- Isolate code being tested.
+
+      -- Why we use mocking?
+
+         -- About relying on external services.
+
+            -- Cant guarantee they will be available
+
+            -- Makes tests unpredictable and inconsistent.
+
+         -- Avoid unintended consequences.
+
+            -- Accidentally sending emails.
+
+            -- Overloading external services.
+
+      -- Mocking purpose the mocking of a function like a real function.
+
+      -- How to mock code?
+
+         -- Use unittest.mock
+
+            -- MagicMock/Mock -> Replace real object.
+            
+            -- patch -> Overrides code for tests.
+
+-- Testing APIs and Web Requests.
+
+   -- Make actual requests.
+
+   -- Check result.
+
+-- Django REST Framework APIClient.
+
+   -- Based on the Django's TestClient.
+
+   -- Make requests.
+
+   -- Check result.
+
+   -- Override authentication
+
+-- Using APIClient.
+
+   -- Import APIClient.
+
+   -- Create client.
+
+   -- Make request.
+
+   -- Check result.
+
+
+C) Configuring Database
+
+-- We're gonna use PostgreSQL
+
+   -- Popular open source DB.
+
+   -- Integrates well with Django.
+
+-- Docker Compose.
+
+   -- Defined with project(re-usable)
+
+   -- Persistent data using volumes.
+
+   -- Handles network configuration.
+
+   -- Environment variable configuration.
+
+-- Architecture.
+
+   ------Docker Compose-------
+
+   -[DB]- <----------> -[APP]-
+
+   -- Network connectivity; we will use docker-compose configurations with depends_on and DB section in docker-compose config file.
+
+-- Volumes.
+
+   -- Persistent data.
+
+   -- Maps directory in container to local machine.
+
+-- Steps for configuring database.
+
+   -- Configure Django.
+
+      -- Tell Django how to connect.
+
+   -- Install db adaptor dependencies.
+
+      -- Install the tool Django uses to connect.
+
+   -- Update python requirements.
+
+-- Django needs to know.
+
+   -- Engine(Type of db).
+
+   -- Hostname (IP or domain name for database).
+
+   -- Port.
+
+   -- DB Name.
+
+   -- Username.
+
+   -- Password.
+
+-- Defined in "settings.py"
+
+-- Environment variables
+
+   -- Pull config values from env variables.
+
+   -- Easily passed to Docker.
+
+   -- Used in local dev or prod.
+
+   -- Single place to configure project.
+
+   -- Easy to do with Python.
+
+-- Psycopg2
+
+   --> The package that we need in order for Django to connect our database.
+
+      -- Most popular PostgreSQL adaptor for Python.
+
+      -- Supported by Django Framework.
+
+      -- Installation options.
+
+         -- psycopg2-binary (Recommended)
+
+            -- OK for development.
+
+            -- Not good for production.
+
+         -- psycopg2
+
+            -- Compiles from source.
+
+            -- Required additional dependencies.
+
+            -- Easy to install with Docker.
+
+         -- List of package dependencies in docs.
+
+            -- C compiler
+
+            -- python3-dev
+
+            -- libpq-dev
+
+         -- Equivalent packages for Alpine.
+
+            -- postgresql-client
+
+            -- build-base
+
+            -- postgresql-dev
+
+            -- musl-dev
+
+         -- Docker best practice:
+
+            -- Clean up build dependencies.
