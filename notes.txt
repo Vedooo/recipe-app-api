@@ -246,3 +246,5 @@ C) Configuring Database
          -- Docker best practice:
 
             -- Clean up build dependencies.
+
+D) We set the db credentials in settings.py 
