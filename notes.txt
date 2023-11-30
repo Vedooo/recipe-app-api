@@ -1,4 +1,4 @@
-A) First we need to decide our requirements in the requirements.txt file 
+A) First we need to decide our requirements in the requirements.txt file
 
 -- Also create Dockerfile, .dockerignore and docker-compose file for app
 
@@ -7,7 +7,7 @@ A) First we need to decide our requirements in the requirements.txt file
 -- Add django project in repo
 
    --> We will add first with docker-compose on dev environment
-      
+
       -- docker-compose run --rm app sh -c "django-admin startproject app ."
 
 -- Configure the github action for project.
@@ -17,7 +17,7 @@ B) Write the test for django framework.
 -- Based on unittest.
 
 -- Django adds features
- 
+
    -- Test client - dummyy web browser
 
    -- Simulate auth.
@@ -99,7 +99,7 @@ B) Write the test for django framework.
          -- Use unittest.mock
 
             -- MagicMock/Mock -> Replace real object.
-            
+
             -- patch -> Overrides code for tests.
 
 -- Testing APIs and Web Requests.
@@ -247,7 +247,7 @@ C) Configuring Database
 
             -- Clean up build dependencies.
 
-D) We set the db credentials in settings.py 
+D) We set the db credentials in settings.py
 
 E) Fixing db race condition.
 
@@ -258,7 +258,7 @@ E) Fixing db race condition.
       -- It doesn't ensure application is running.
 
       -- When service is start but it takes too much time and waiting for db because of "depends_on" parameter in compose file
-      and when db is intialized service is crushed because of the timeout. So we need to solve this traffic with 
+      and when db is intialized service is crushed because of the timeout. So we need to solve this traffic with
       "wait_for_db" command.
 
          -- Make Django "wait for db"
@@ -350,3 +350,234 @@ F) Database Migration
       -> python manage.py migrate
 
    -- Run it after waiting for database
+
+G) Django Authetication.
+
+   -- Build in auth system.
+
+   -- Framework for basic features.
+
+      -- Registration.
+
+      -- Login
+
+      -- Auth
+
+   -- Integrates with Django admin.
+
+-- Django user model.
+
+   -- Foundation of the django auth system.
+
+   -- Default user model
+
+      -- Username instead of emails
+
+      -- Not easy to customise.
+
+   -- Create a custom model for new project.
+
+      -- Allows for using email instead of username.
+
+      -- Future proof project for later changes to user model.
+
+   -- How to customise user model
+
+      -- Create model
+
+         -- Base from "AbstractBaseUser" and "PermissionsMixin".
+
+      -- Create custom manager.
+
+         -- Used for CLI Integration
+
+      -- Set AUTH_USER_MODEL in settings.py
+
+      -- Create and run migrations.
+
+   -- AbstractBaseUser
+
+      -- Provides features for authentication.
+
+      -- Doesnt include fields.
+
+   -- PermissionsMixin
+
+      -- Support for Django permission system.
+
+      -- Includes field and methods.
+
+   -- Common issues
+
+      -- Running migrations before setting custom model.
+
+         -- Set custom model first.
+
+      -- Typos in config.
+
+      -- Indentation in manager or model.
+
+-- Desing custom user model.
+
+   -- email(EmailField)
+
+   -- name(CharField)
+
+   -- is_active(BooleanField)
+
+   -- is_staff(BooleanField)
+
+-- User model manager
+
+   -- Used to manage objects.
+
+   -- Custom logic for creating objects.
+
+      -- Hash password.
+
+   -- Used by Django CLI.
+
+      -- Create superuser.
+
+   -- BaseUserManager
+
+      -- Base class for managing users.
+
+      -- Useful helper methods.
+
+         -- normalize_email: for storing emails consistently.
+
+      -- Methods we'll define.
+
+         -- create_user: called when creating user.
+
+         -- create_superuser: used by the CLI to create a superuser(admin).
+
+-- We start with creating unittest for custom user model.
+
+-- After that we can set a user model
+
+-- And create user model manager.
+
+-- After that we gonna add new user model to settings.py
+
+   -- AUTH_USER_MODEL = 'core.User'
+
+   -- And execute "makemigrations" command
+
+      -- docker-compose run --rm app sh -c "python manage.py makemigrations"
+
+   -- After that we will run to our db and migrate our user model with:
+
+      -- docker-compose run --rm app sh -c "python manage.py wait_for_db && python manage.py migrate"
+
+   -- But it'll give us a error about the user model migrations to db so we have to do:
+
+      -- Down docker-compose instance: docker-compose down
+
+      -- Delete docker volume: docker volume rm <app-volume-name>
+
+      -- And run again: docker-compose run --rm app sh -c "python manage.py wait_for_db && python manage.py migrate"
+
+      -- Finally we migrate our usermodel changes.
+
+         -- Output:
+
+            Database unavailable, waiting 1 second...
+            Database unavailable, waiting 1 second...
+            Database unavailable, waiting 1 second...
+            Database unavailable, waiting 1 second...
+            Database available!
+            Operations to perform:
+            Apply all migrations: admin, auth, contenttypes, core, sessions
+            Running migrations:
+            Applying contenttypes.0001_initial... OK
+            Applying contenttypes.0002_remove_content_type_name... OK
+            Applying auth.0001_initial... OK
+            Applying auth.0002_alter_permission_name_max_length... OK
+            Applying auth.0003_alter_user_email_max_length... OK
+            Applying auth.0004_alter_user_username_opts... OK
+            Applying auth.0005_alter_user_last_login_null... OK
+            Applying auth.0006_require_contenttypes_0002... OK
+            Applying auth.0007_alter_validators_add_error_messages... OK
+            Applying auth.0008_alter_user_username_max_length... OK
+            Applying auth.0009_alter_user_last_name_max_length... OK
+            Applying auth.0010_alter_group_name_max_length... OK
+            Applying auth.0011_update_proxy_permissions... OK
+            Applying auth.0012_alter_user_first_name_max_length... OK
+            Applying core.0001_initial... OK
+            Applying admin.0001_initial... OK
+            Applying admin.0002_logentry_remove_auto_add... OK
+            Applying admin.0003_logentry_add_action_flag_choices... OK
+            Applying sessions.0001_initial... OK
+
+      -- Now we can test our app with:
+
+         docker-compose run --rm app sh -c "python manage.py test"
+
+      -- And will work correctly.
+
+-- Now we are adding new feature for email.
+
+   -- First we added test(test_new_user_email_normalized) on core/tests/test_models.py
+
+   -- Now we can add new feature on core/models.py
+
+      -- We convert this line "user = self.model(email=email, **extra_fields)" --> "user = self.model(email=self.normalize_email(email), **extra_fields)"
+
+-- Add new feature to require email address.
+
+   -- First we are adding new test(test_new_user_without_email_raises_error) on core/tests/test_models.py again.
+
+   -- Now we can add new feature on core/models.py
+
+   -- We convert these part:
+
+      def create_user(self, email, password=None, **extra_fields):
+        """Create save and return a new user."""
+        user = self.model(email=self.normalize_email(email), **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+
+      -->
+
+      def create_user(self, email, password=None, **extra_fields):
+        """Create save and return a new user."""
+        if not email:
+            raise ValueError('User must have an email address.')
+        user = self.model(email=self.normalize_email(email), **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+
+-- Add superuser functionality.
+
+   -- First we are adding new test(test_create_superuser) on core/tests/test_models.py again.
+
+   -- Now we can add new feature on core/models.py
+
+      def create_superuser(self, email, password):
+        """Create and return new superuser."""
+        user = self.create_user(email, password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+
+        return user
+
+-- And finally we can test it as interactively.
+
+   -- docker-compose up
+
+   -- go to interface 127.0.0.1:8000/admin.
+
+   -- We need to create superuser, we can create with django CLI:
+
+      -> docker-compose run --rm app sh -c "python manage.py createsuperuser"
+
+      -> admin@example.com, vedo1234
+
+   -- After that we can login to admin panel.
