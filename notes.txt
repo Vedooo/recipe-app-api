@@ -581,3 +581,57 @@ G) Django Authetication.
       -> admin@example.com, vedo1234
 
    -- After that we can login to admin panel.
+
+
+H) Setup Django Admin
+
+-- What is the django admin
+
+   -- GUI for models.
+
+      -- C.R.U.D.
+
+   -- Very little coding required.
+
+-- How to enable django admin.
+
+   -- Enable per model.
+
+   -- Inside admin.py
+
+      -- admin.site.register(Recipe)
+
+-- Customising
+
+   -- Create class based off ModelAdmin or UserAdmin.
+
+   -- Override/set class variables.
+
+-- Changing list of objects.
+
+   -- ordering: changes order items appear.
+
+   -- list_display: fields to appear in list.
+
+-- Add/update page.
+
+   -- fieldsets: control layout of page.
+
+   -- readonly_fields: fields that cannot be changed.
+
+-- Add page.
+
+   -- add_fieldsets: fields displayed only on add page.
+
+
+--> First we need to create a new unittest on app/core/tests/test_admin.py
+
+--> Now we can create and define our admin model in app/core/admin.py
+
+--> Now implement our custom user model for admin site.
+
+   -- First write the test.
+
+   -- Secont implement new areas to admin.py/UserAdmin class with css classes and declerations.
+
+   -- With this changes we are created an management interface for admin and user site.
