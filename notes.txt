@@ -792,3 +792,101 @@ J) User API
 --> We need to create /user/urls.py for views connection and routing for urls.
 
 --> Also we need to add our urls to main app/urls.py
+
+-- Authentication for UserAPI
+
+   -- Types of authentication. (BAD WAY)
+
+      -- Send username and password with each request.
+
+   -- Token (BEST WAY)
+
+      -- Use a token in the HTTP header.
+
+   -- JWT
+
+      -- Use an access and refresh token.
+
+-- Token Authentication.
+
+   -- Balance of simplicity and security.
+
+   -- Supported out of the box by DRF.
+
+   -- Well support by most client.
+
+HOW ITS WORK:
+                  (Database, Cookie, Local Storage, Session Storage)
+    [CREATE TOKEN] ------> [STORE TOKEN ON CLIENT] ------> [INCLUDE TOKEN IN HTTP HEADERS]
+(Post username/password)
+
+   -- Pros:
+
+         - Supported out of the box.
+
+         - Simple to use.
+
+         - Supported by all clients.
+
+         - Avoid sending username/password each time.
+
+   -- Cons:
+
+         - Token needs to be secure.
+
+         - Requires database requests.
+
+-- Logging out
+
+   -- Happens on the client side.
+
+   -- Delete token.
+
+   -- Why no logout API?
+
+      -- Unreliable
+
+         -- No guarantee it will be called.
+
+      -- Not useful on API.
+
+--> First we create a new test for token API.
+
+--> Than we need create our auth service serializer but first we need to add new app (rest_framework.authtoken) in settings.py/INSTALLED_APPS
+
+   class AuthTokenSerializer(serializers.Seriaizer):
+      """Serializer for the user auth token."""
+      email = serializers.EmailField()
+      password = serializers.CharField(
+         style={'input_type': 'password'},
+         trim_whitespace=False,
+      )
+
+--> Also add new validate method
+
+   def validate(self, attrs):
+      """Validate and authenticate the user."""
+      email = attrs.get('email')
+      password = attrs.get('password')
+      user = authenticate(
+         request=self.context.get('request'),
+         username=email,
+         password=password,
+      )
+      if not user:
+         msg = _('Unable to authenticate with provided credentials.')
+         raise serializers.ValidationError(msg, code='authorization')
+
+      attrs['user'] = user
+      return attrs
+
+--> Than we gonna create new views for authentication in views.py.
+
+   class CreateTokenView(ObtainAuthToken):
+      """Create a new auth token for user."""
+      serializer_class = AuthTokenSerializer
+      renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+--> Last thing we need to do is set the url paths in app/user/urls.py
+
+   path('token/', views.CreateTokenView.as_view(), name='token'),
