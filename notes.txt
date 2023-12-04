@@ -743,3 +743,52 @@ I) Creating documentation for API.
    ]
 
 -- And we can reach to url with localhost:8000/api/docs
+
+J) User API
+
+-- User registration.
+
+-- Creating auth token.
+
+-- Viewing/updating profile.
+
+-- Enpoints.
+
+   -- user/create/
+
+      -- POST - Register a new user.
+
+   -- user/token/
+
+      -- POST - Create new token.
+
+   -- user/me/
+
+      -- PUT/PATCH - Update profile.
+
+      -- GET - View profile.
+
+--> First we will create new django project.
+
+   --> docker-compose run --rm app sh -c "python manage.py startapp user"
+
+   --> We have to delete migrations folder, tests.py, admin.py and models.py because we dont need to define here.
+
+   --> And create a subdirectory for tests.
+
+      --> Also add __init__.py to users/tests folder.
+
+   --> Than we need to add new app(user) to settings.py/INSTALLED_APPS
+
+--> After that we will create tests for our create user endpoint on user/tests/
+
+   -- Public tests - unauthenticated requests.
+   -- Registering a new user.
+
+--> Now we will create a serializer for creating object feature for users.
+
+--> After defining features in serializers.py we need to create and define our views in views.py for uses serializers.
+
+--> We need to create /user/urls.py for views connection and routing for urls.
+
+--> Also we need to add our urls to main app/urls.py
