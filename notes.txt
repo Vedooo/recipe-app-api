@@ -635,3 +635,111 @@ H) Setup Django Admin
    -- Secont implement new areas to admin.py/UserAdmin class with css classes and declerations.
 
    -- With this changes we are created an management interface for admin and user site.
+
+I) Creating documentation for API.
+
+   -- Everything needed to use the API
+
+   -- Available endpoints (paths)
+
+      -- /api/recipies
+
+   -- Supported methods.
+
+      -- GET, POST, PUT, PATCH, DELETE
+
+   -- Format of payloads (inputs)
+
+      -- Parameters.
+
+      -- Post JSON format.
+
+   -- Format of responses (outputs)
+
+      -- Response JSON format.
+
+   -- Authetication process.
+
+-- Options from documentation
+
+   -- Manual
+
+      -- Word doc.
+
+      -- Markdown.
+
+   -- Automated.
+
+      -- Use metadata from code (comments)
+
+      -- Generate documentation pages.
+
+-- Docs in DRF
+
+   -- Auto generate docs(with third party library)
+
+      -- drf-spectacular.
+
+   -- Generate schema.
+
+   -- Browsable web interface
+
+      -- Make tesst requests.
+
+      -- Handle auth.
+
+-- How its works.
+
+   -- Generate "schema" file.
+
+   -- Parse schema into GUI.
+
+-- OpenAPI Schema.
+
+   -- Standard for describe APIs
+
+   -- Popular in industry.
+
+   -- Supported by most API documentation tools.
+
+   -- Uses popular formats: YAML/JSON.
+
+-- We are gonna use Swagger for schema configuration.
+
+   -- Download and run in local Swagger instance.
+
+   -- Serve Swagger with API.
+
+--> First we need to add our requirements in requirements.txt
+
+--> And build with compose again. (docker-compose build)
+
+--> Next step we need to add new app to settings.py/INSTALLED_APPS named "rest_framework"
+
+--> rest_framework provides to create new schema
+
+--> With this defination we can create customized schame for API documentation.
+
+   REST_FRAMEWORK = {
+      'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+   }
+
+-- And now we will create our urls which will defined for documentation.
+
+   from drf_spectacular.views import (
+      SpectacularAPIView,
+      SpectacularSwaggerView,
+   )
+
+
+   urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),
+    path(
+        'api/docs/',
+        SpectacularSwaggerView.as_view(url_name='api-schema'),
+        name='api-docs',
+      )
+   ]
+
+-- And we can reach to url with localhost:8000/api/docs
